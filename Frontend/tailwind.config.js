@@ -7,7 +7,7 @@ export default {
         poppins: ['Poppins', 'sans-serif'],
       },
       colors: {
-        primary: "#2563eb",
+        primary: "#f97316",
         secondary: "#64748b",
         danger: "#dc2626",
         success: "#16a34a"
