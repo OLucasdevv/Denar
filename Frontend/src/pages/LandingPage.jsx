@@ -3,9 +3,12 @@ import { useIntersectionObserver } from "../utils/scrollReveal";
 import FeatureCards from "../components/featureCards";
 import LogoLoop from "../components/Logoloop";
 import { Link } from "react-router-dom";
+import Chart from "@/components/Chart";
+import AnimatedContent from "@/components/AnimatedContent";
+import { useSmoothScroll } from "@/components/useSmoothScroll";
 
 const LandingPage = () => {
-
+useSmoothScroll();
     const imageLogos = [
   { src: "nuLogo.png", alt: "Nubank" },
   { src: "itauLogo.png", alt: "Inter" },
@@ -49,34 +52,84 @@ const features = [
         <section className = "h-[900px]">
             
             <div className = "grid sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 min-h-screen items-center ml-28">
-                <div className = " flex flex-col gap-6     ">
+                
+                <div className = " flex flex-col gap-6">
+                    <AnimatedContent
+  distance={60}
+  direction="vertical"
+  reverse={false}
+  duration={0.5}
+  ease="power3.out"
+  initialOpacity={0}
+  animateOpacity
+  scale={1}
+  threshold={0.1}
+  delay={0.1}
+>
                 <h1 className = "text-6xl tracking-tight flex flex-col gap-5 font-medium">
                     Seu dinheiro explicado. <br />
                     <spam className = "bg-gradient-to-b from-gray-900 to-gray-500 bg-clip-text text-transparent">
                         Antes que ele desapareça.
                     </spam>
                 </h1>
+                </AnimatedContent>
+                <AnimatedContent
+  distance={40}
+  direction="vertical"
+  reverse={false}
+  duration={0.5}
+  ease="power3.out"
+  initialOpacity={0}
+  animateOpacity
+  scale={1}
+  threshold={0.1}
+  delay={0.20}
+>
                 <p className = "tracking-wide text-gray-700 text-xl">
                     Conecte suas contas bancárias e receba insights claros <br /> sobre seus gastos, padrões e previsões financeiras.
                 </p>
+                </AnimatedContent>
                 <Link
                 to={"/loginpage"}
                 >
+                    <AnimatedContent
+  distance={60}
+  direction="vertical"
+  reverse={false}
+  duration={0.5}
+  ease="power3.out"
+  initialOpacity={0}
+  animateOpacity
+  scale={1}
+  threshold={0.1}
+  delay={0.35}
+>
                 <button 
                 className = "h-10 w-40 bg- text-black rounded-lg bg-primary shadow-md hover:shadow-xl transition-shadow"
                 
                 >
                     Comece agora
                 </button>
+                </AnimatedContent>
                 </Link>
                 </div>
-                <div className = "flex flex-col  ">
-                    <img  
-                        src = "/card.png"
-                        className = "  drop-shadow-2xl hover:scale-110 transition-transform duration-500"
-                    />
+                <AnimatedContent
+  distance={119}
+  direction="horizontal"
+  reverse={false}
+  duration={0.8}
+  ease="power3.out"
+  initialOpacity={0}
+  animateOpacity
+  scale={1}
+  threshold={0.1}
+  delay={0.1}
+>
+                <div className = "flex flex-col  ml-10">
+                   <Chart />
                     
                 </div>
+                </AnimatedContent>
             </div>
         </section>
         
@@ -140,7 +193,7 @@ const features = [
         scaleOnHover
         fadeOut
         fadeOutColor="#ffffff"
-        ariaLabel="Technology partners"
+        ariaLabel="Bancos Suportados"
       />
       
       

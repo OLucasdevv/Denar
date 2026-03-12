@@ -11,6 +11,11 @@ router.post("/register", async (req, res) => {
     if (error) {
         return res.status(400).json({error: error.message});
     }
+    
+    if (data.user?.identities?.length === 0) {
+    return res.status(400).json({ message: "Este email já está cadastrado." });
+  }
+
     res.json({message: "usuário criado com sucesso! você já pode aproveitar o Denar.", user: data.user});
 });
 

@@ -1,88 +1,101 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { supabase } from "@/supabaseClient";
 import EyeIcon from '/public/eye.svg'
 import EyeOffIcon from '/public/eye-off.svg'
-import { useNavigate } from "react-router-dom";
 import LoadingSpinner from "@/components/LoadingSpinner";
 
-const LoginPage = () => {
-  const navigate = useNavigate()
-  const [error, setError] = useState('');
+
+const RegisterPage = () => {
+  const navigate = useNavigate();
+  const [email, setEmail] = useState('');
   const [senha, setSenha] = useState ('');
-  const [email, setEmail] = useState ('');
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState (false);
+  const [error, setError] = useState ('');
   const [passwordtoggle, setpasswordtoggle] = useState (true);
 
-  const handleGoogle = async () => {
-  await supabase.auth.signInWithOAuth({ 
+  const verifypassword = (senha, email) => {
+  if (senha.length === 0) {
+    return 'Por favor, digite sua senha'
+  }
+  if (email.length === 0) {
+    return 'Por favor, digite seu email'
+  }
+  if (senha.length < 8 || senha.length > 30) {
+    return 'A senha deve ter entre 8 e 30 caracteres'
+  }
+  if (!/[A-Z]/.test(senha)) {
+    return 'A senha deve conter pelo menos uma letra maiúscula'
+  }
+  if (!/[a-z]/.test(senha)) {
+    return 'A senha deve conter pelo menos uma letra minúscula'
+  }
+  if (!/[0-9]/.test(senha)) {
+    return 'A senha deve conter pelo menos um número'
+  }
+  return null // null = sem erro
+}
+
+const handleGoogle = async () => {
+   await supabase.auth.signInWithOAuth({ 
     provider: 'google',
     options: {
       redirectTo: 'http://localhost:5173/dashboard'
     }
-  })
+   })
 }
-  const verifyequality = (senha, email) => {
-    if (senha.length === 0) {
-      return 'Por favor, digite sua senha'
-    }
-    if (email.length === 0) {
-      return 'Por favor, digite seu email'
-    }
-  
-    
-  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
+    setError('')
 
-    const invalidInput = verifyequality(senha, email)
-    if (invalidInput) {
-      setError(invalidInput)
-      return;
-    };
-    
-    setLoading(true);
-    const response = await fetch('http://localhost:3333/auth/login', {
+    const invalidPassword = verifypassword(senha, email)
+    if (invalidPassword) {
+      setError(invalidPassword)
+      return
+    }
+
+setLoading(true)
+    const response = await fetch('http://localhost:3333/auth/register', {
       method: 'POST',
       headers: {'Content-type': 'application/json'},
       body: JSON.stringify({email, password: senha})
-    });
+    })
 
-    const data = await response.json();
+    const data = await response.json()
     setLoading(false)
-   
     if (!response.ok) {
-    setError(data.error)
-
-    const tradutor = {
-    "Invalid login credentials": "E-mail ou senha incorretos.",
-    "User not found": "Usuário não encontrado.",
-    "Email not confirmed": "Por favor, confirme seu e-mail antes de entrar."
-  };
-  setError(tradutor[data.error] || "Ocorreu um erro ao tentar entrar. Tente novamente.");
-    return;
-    }
-    
+      setError(data.error)
+      return
+    } 
     navigate('/dashboard')
-  }
 
-  
-  return (
-    <section className="h-screen bg-zinc-900">
-      
-      <div className="flex items-center justify-center h-full">
-        <div className="flex flex-col min-h-[600px] w-[450px] bg-[#0f0f0f] p-6 rounded-md gap-7 shadow-2xl shadow-black">
+
+
+  }
+    return (
+        <section className = "h-screen bg-zinc-900">
+
+          <main className = "grid grid-cols-[40%_60%] ">
+
+
+
+
+            <div className = "h-screen flex items-center justify-center">
+        <div className="flex flex-col min-h-[600px] w-[450px] bg-[#0f0f0f] p-6 rounded-md gap-7 shadow-2xl shadow-black ">
           
           <h1 className="text-3xl tracking-wider font-medium self-center text-white">
-            Entrar no DENAR
+            Crie sua conta
           </h1>
 
           <p className="self-center text-zinc-300">
             digite seu email e senha para continuar
           </p>
 
-          <button onClick={handleGoogle}  className="flex items-center justify-center w-full px-4 py-2 text-md font-medium text-white transition-colors border border-zinc-500 rounded-lg hover:bg-zinc-800">
+          <button 
+          onClick={handleGoogle}
+          className="flex items-center justify-center w-full px-4 py-2 text-md font-medium text-white transition-colors border border-zinc-500 rounded-lg hover:bg-zinc-800">
             <svg
               className="w-5 h-5 mr-3"
               viewBox="-0.5 0 48 48"
@@ -117,54 +130,55 @@ const LoginPage = () => {
             <div className="flex-grow border-t border-zinc-500"></div>
           </div>
 
+<form onSubmit={handleSubmit} className="flex flex-col gap-5">
           <div className="flex flex-col gap-1">
             <p className="text-sm text-zinc-300">Endereço de Email</p>
-
+      
             <input
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
               type="email"
               placeholder="seuemail@exemplo.com"
               className="w-full px-4 py-2 bg-transparent border border-zinc-500 rounded-lg placeholder-zinc-400 text-white focus:border-primary focus:outline-none"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
           </div>
 
-          <div className="flex flex-col gap-1 relative">
+          <div className="flex flex-col gap-1 relative ">
             <div className="flex justify-between">
               <p className="text-sm text-zinc-300">Sua senha</p>
 
-              <a
-                href="/reset-password"
-                className="text-sm text-primary hover:underline"
-              >
-                Esqueceu sua senha?
-              </a>
+              
             </div>
 
-                          <input
-                         type={passwordtoggle ? 'password' : 'text'}
-                         placeholder="sua senha"
-                         value={senha}
-                         onChange={(e) => setSenha(e.target.value)}
-                         className="w-full px-4 py-2 bg-transparent border border-zinc-500 rounded-lg placeholder-zinc-400 text-white focus:border-primary focus:outline-none "
-                       />
-                       <button type="button" className = "right-3 top-11 -translate-y-1/2 absolute" onClick={(e) => { 
-                        e.preventDefault();
-                        setpasswordtoggle (!passwordtoggle);
-                        
-                        } }>
-                           <img src={passwordtoggle ? EyeOffIcon : EyeIcon} alt="Eye" className="w-5 h-5" />
-                       </button>
-          </div>
+            <input
+              type={passwordtoggle ? 'password' : 'text'}
+              placeholder="sua senha"
+              value={senha}
+              onChange={
+                (e) => setSenha(e.target.value)
+              }
+              className="w-full px-4 py-2 bg-transparent border border-zinc-500 rounded-lg placeholder-zinc-400 text-white focus:border-primary focus:outline-none "
+            />
+            <button type="button" className = "right-3 top-11 -translate-y-1/2 absolute" onClick={() => {
+              setpasswordtoggle (!passwordtoggle)
+              e.preventDefault();
+              }}>
+                <img src={passwordtoggle ? EyeOffIcon : EyeIcon} alt="Eye" className="w-5 h-5" />
+            </button>
+            <p className = "text-xs text-gray-500">
+              sua senha deve ter entre 8-30 caracteres, deve conter pelo menos uma letra maiúscula, uma letra minúscula e um número.
+            </p>
+            
 
+          </div>
 {error && (
   <p className="text-red-500 text-sm font-medium animate-in">
     {error}
   </p>
 )}
-          <button onClick= {handleSubmit} className=" flex items-center justify-center bg-gradient-to-r from-primary to-orange-700 w-full  h-10 rounded-lg text-black font-medium mt-5 hover:bg-gradient-to-l hover:from-orange-700 hover:to-primary transition">
-            {!loading && (
-              "Entrar"
+          <button onClick={handleSubmit} type= "submit" disabled={loading} className="flex items-center justify-center bg-gradient-to-r from-primary to-orange-700 w-full  h-10 rounded-lg text-black font-medium mt-5 hover:bg-gradient-to-l hover:from-orange-700 hover:to-primary transition ">
+              {!loading && (
+              "Criar conta"
             )}
             {loading && (
               <LoadingSpinner
@@ -174,20 +188,29 @@ const LoginPage = () => {
             )}
           </button>
 
+          </form>
+
           <p className="self-center text-zinc-300">
-            Não tem uma conta?{" "}
+            Já tem uma conta?{" "}
             <Link
-            to={"/registerpage"}
+            to={"/loginpage"}
             >
             <a  className="text-primary hover:underline">
-              Criar conta
+              Login
             </a>
             </Link>
           </p>
         </div>
-      </div>
-    </section>
-  );
-};
+            </div>
 
-export default LoginPage;
+
+             <div className = "bg-gradient-to-r from-zinc-800 to-black">
+                div 2
+            </div>
+          </main>
+
+        </section>
+
+    )
+    };
+    export default RegisterPage;

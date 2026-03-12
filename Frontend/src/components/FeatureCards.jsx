@@ -1,6 +1,6 @@
 const FeatureCards = ({title, description, image}) => {
     return (
-        <div className="flex flex-col w-80 bg-gradient-to-b from-slate-200/60 to-slate-200/20 h-96 rounded-3xl p-6 ">
+        <div className="flex flex-col w-80 bg-gradient-to-b from-primary/50 to-white h-96 rounded-3xl p-6 ">
             
             <div className="flex-1 flex flex-col gap-3">
                 <h1 className="font-medium text-xl">
