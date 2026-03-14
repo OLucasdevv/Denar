@@ -24,7 +24,6 @@ const Onboarding = () => {
     <section className="h-screen bg-zinc-900">
       <div className="flex items-center justify-center h-full">
         <div className="flex flex-col h-[600px] w-[450px] bg-[#0f0f0f] p-6 rounded-md shadow-2xl shadow-black">
-
           <Stepper
             className="h-full text-white"
             initialStep={1}

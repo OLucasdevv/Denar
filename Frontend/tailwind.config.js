@@ -9,7 +9,22 @@ export default {
         poppins: ['Poppins', 'sans-serif'],
       },
       colors: {
-        // --- SUAS CORES (Mantidas exatamente iguais) ---
+        sidebar: {
+          DEFAULT: "var(--sidebar)",
+          foreground: "var(--sidebar-foreground)",
+          border: "var(--sidebar-border)",
+          hover: "var(--sidebar-hover)",
+        },
+        background: "var(--background)",
+        foreground: "var(--foreground)",
+        border: "var(--border)",
+        input: "var(--input)",
+        ring: "var(--ring)",
+        denar: {
+          main: "var(--bg-main)",
+          side: "var(--bg-side)",
+          accent: "var(--bg-accent)",
+        },
         primary: {
           DEFAULT: "#f97316", // Seu laranja continua aqui!
           foreground: "#ffffff",

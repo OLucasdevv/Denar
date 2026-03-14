@@ -1,4 +1,4 @@
-const LoadingSpinner = ({ size = "h-8 w-8", color = "text-blue-600" }) => {
+const LoadingSpinner = ({ size = "h-8 w-8", color = "text-blue-600", className = '' }) => {
   return (
     <div role="status">
         <svg 

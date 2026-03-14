@@ -204,8 +204,13 @@ setLoading(true)
             </div>
 
 
+
+
+
+
              <div className = "bg-gradient-to-r from-zinc-800 to-black">
-                div 2
+              
+
             </div>
           </main>
 

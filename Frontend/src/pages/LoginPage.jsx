@@ -5,6 +5,7 @@ import EyeOffIcon from '/public/eye-off.svg'
 import { useNavigate } from "react-router-dom";
 import LoadingSpinner from "@/components/LoadingSpinner";
 
+
 const LoginPage = () => {
   const navigate = useNavigate()
   const [error, setError] = useState('');
@@ -28,31 +29,33 @@ const LoginPage = () => {
     if (email.length === 0) {
       return 'Por favor, digite seu email'
     }
-  
+    return null;
     
   }
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError('');
+ const handleSubmit = async (e) => {
+  e.preventDefault();
+  setError('');
 
-    const invalidInput = verifyequality(senha, email)
-    if (invalidInput) {
-      setError(invalidInput)
-      return;
-    };
-    
-    setLoading(true);
-    const response = await fetch('http://localhost:3333/auth/login', {
-      method: 'POST',
-      headers: {'Content-type': 'application/json'},
-      body: JSON.stringify({email, password: senha})
-    });
+  const invalidPassword = verifyequality (senha, email) 
+  if (invalidPassword) {
+    setError(invalidPassword);
+    return;
+  }
 
-    const data = await response.json();
-    setLoading(false)
-   
-    if (!response.ok) {
+  setLoading(true);
+
+  const response = await fetch('http://localhost:3333/auth/login', {
+    method: 'POST',
+    headers: {
+      'Content-type': 'application/JSON'
+    },
+    body: JSON.stringify({email, password: senha})
+  })
+
+  const data = await response.json()
+  setLoading(false);
+ if (!response.ok) {
     setError(data.error)
 
     const tradutor = {
@@ -63,9 +66,8 @@ const LoginPage = () => {
   setError(tradutor[data.error] || "Ocorreu um erro ao tentar entrar. Tente novamente.");
     return;
     }
-    
     navigate('/dashboard')
-  }
+ };
 
   
   return (
