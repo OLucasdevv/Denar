@@ -1,11 +1,11 @@
-import Navbar from "../components/LandingNavbar";
+import Navbar from "../components/navigationbars/LandingNavbar";
 import { useIntersectionObserver } from "../utils/scrollReveal";
-import FeatureCards from "../components/featureCards";
-import LogoLoop from "../components/Logoloop";
+import FeatureCards from "../components/layouts/FeatureCards";
+import LogoLoop from "../components/layouts/LogoLoop";
 import { Link } from "react-router-dom";
-import Chart from "@/components/Chart";
-import AnimatedContent from "@/components/AnimatedContent";
-import { useSmoothScroll } from "@/components/useSmoothScroll";
+import Chart from "@/components/charts/SpendingPaceChart";
+import AnimatedContent from "@/components/effects/AnimatedContent";
+import { useSmoothScroll } from "@/components/effects/useSmoothScroll";
 
 const LandingPage = () => {
 useSmoothScroll();
@@ -68,9 +68,9 @@ const features = [
 >
                 <h1 className = "text-6xl tracking-tight flex flex-col gap-5 font-medium">
                     Seu dinheiro explicado. <br />
-                    <spam className = "bg-gradient-to-b from-gray-900 to-gray-500 bg-clip-text text-transparent">
+                    <span className = "bg-gradient-to-b from-gray-900 to-gray-500 bg-clip-text text-transparent">
                         Antes que ele desapareça.
-                    </spam>
+                    </span>
                 </h1>
                 </AnimatedContent>
                 <AnimatedContent

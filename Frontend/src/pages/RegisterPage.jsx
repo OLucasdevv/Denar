@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/supabaseClient";
 import EyeIcon from '/public/eye.svg'
 import EyeOffIcon from '/public/eye-off.svg'
-import LoadingSpinner from "@/components/LoadingSpinner";
+import LoadingSpinner from "@/components/effects/LoadingSpinner";
 
 
 const RegisterPage = () => {
@@ -41,7 +41,7 @@ const handleGoogle = async () => {
    await supabase.auth.signInWithOAuth({ 
     provider: 'google',
     options: {
-      redirectTo: 'http://localhost:5173/dashboard'
+      redirectTo: 'http://localhost:5173/onboarding'
     }
    })
 }
@@ -57,19 +57,31 @@ const handleGoogle = async () => {
     }
 
 setLoading(true)
-    const response = await fetch('http://localhost:3333/auth/register', {
-      method: 'POST',
-      headers: {'Content-type': 'application/json'},
-      body: JSON.stringify({email, password: senha})
-    })
+    const { data, error } = await supabase.auth.signUp({
+    email,
+    password: senha
+  });
 
-    const data = await response.json()
-    setLoading(false)
-    if (!response.ok) {
-      setError(data.error)
-      return
-    } 
-    navigate('/dashboard')
+  setLoading(false);
+
+  if (error) {
+    const tradutor = {
+      "User already registered": "Este e-mail já está cadastrado.",
+      "Password should be at least 6 characters": "A senha deve ter pelo menos 6 caracteres.",
+    };
+    setError(tradutor[error.message] || "Ocorreu um erro ao criar sua conta. Tente novamente.");
+    return;
+  }
+
+  await fetch ('http://localhost:3333/auth/session', {
+    method: 'POST',
+    headers: {'Content-type' : 'application/json'},
+    credentials: 'include',
+    body: JSON.stringify({token: data.session.access_token})
+
+  })
+
+  navigate('/onboarding');
 
 
 

@@ -74,6 +74,8 @@ body { overflow-x: hidden; }
     --input: oklch(0.922 0 0);
     --ring: oklch(0.708 0 0);
     --radius: 0.625rem;
+    --shadow-dark: #c8c8cb;
+  --shadow-light: #ffffff;
     
     /* Sidebar Light */
     --sidebar: oklch(0.985 0 0);
@@ -97,6 +99,7 @@ body { overflow-x: hidden; }
     --sidebar-foreground: #e4e4e7CC;
     --sidebar-border: #e4e4e71a;
     --sidebar-hover: #2e2e30;
+   --bg-accent: #c9c9d6;
     
     /* 3. Cards e Itens de destaque (denar-accent - tom mais claro) */
     --card: oklch(0.22 0 0);
@@ -123,6 +126,8 @@ body { overflow-x: hidden; }
     --chart-3: oklch(0.5 0 0);
     --chart-4: oklch(0.6 0 0);
     --chart-5: oklch(0.7 0 0);
+    --shadow-dark: #0a0a0d;
+  --shadow-light: #222225;
   }
 }
 

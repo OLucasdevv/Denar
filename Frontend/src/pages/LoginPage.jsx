@@ -3,7 +3,8 @@ import { Link } from "react-router-dom";
 import EyeIcon from '/public/eye.svg'
 import EyeOffIcon from '/public/eye-off.svg'
 import { useNavigate } from "react-router-dom";
-import LoadingSpinner from "@/components/LoadingSpinner";
+import LoadingSpinner from "@/components/effects/LoadingSpinner";
+import { supabase } from "@/supabaseClient";
 
 
 const LoginPage = () => {
@@ -33,11 +34,11 @@ const LoginPage = () => {
     
   }
 
- const handleSubmit = async (e) => {
+const handleSubmit = async (e) => {
   e.preventDefault();
   setError('');
 
-  const invalidPassword = verifyequality (senha, email) 
+  const invalidPassword = verifyequality(senha, email);
   if (invalidPassword) {
     setError(invalidPassword);
     return;
@@ -45,29 +46,32 @@ const LoginPage = () => {
 
   setLoading(true);
 
-  const response = await fetch('http://localhost:3333/auth/login', {
-    method: 'POST',
-    headers: {
-      'Content-type': 'application/JSON'
-    },
-    body: JSON.stringify({email, password: senha})
-  })
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email,
+    password: senha
+  });
 
-  const data = await response.json()
   setLoading(false);
- if (!response.ok) {
-    setError(data.error)
 
+  if (error) {
     const tradutor = {
-    "Invalid login credentials": "E-mail ou senha incorretos.",
-    "User not found": "Usuário não encontrado.",
-    "Email not confirmed": "Por favor, confirme seu e-mail antes de entrar."
-  };
-  setError(tradutor[data.error] || "Ocorreu um erro ao tentar entrar. Tente novamente.");
+      "Invalid login credentials": "E-mail ou senha incorretos.",
+      "User not found": "Usuário não encontrado.",
+      "Email not confirmed": "Por favor, confirme seu e-mail antes de entrar."
+    };
+    setError(tradutor[error.message] || "Ocorreu um erro ao tentar entrar. Tente novamente.");
     return;
-    }
-    navigate('/dashboard')
- };
+  }
+
+  await fetch('http://localhost:3333/auth/session', {
+    method: 'POST',
+    headers: { 'Content-type': 'application/json' },
+    credentials: 'include',
+    body: JSON.stringify({ token: data.session.access_token })
+  });
+
+  navigate('/dashboard');
+};
 
   
   return (
@@ -160,7 +164,7 @@ const LoginPage = () => {
           </div>
 
 {error && (
-  <p className="text-red-500 text-sm font-medium animate-in">
+  <p className="text-red-600 text-sm font-medium animate-in">
     {error}
   </p>
 )}

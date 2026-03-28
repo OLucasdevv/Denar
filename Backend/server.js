@@ -3,24 +3,22 @@ import cors from "cors";
 import dotenv from "dotenv";
 import supabase from "./src/services/supabase.js";
 import authRoutes from "./src/routes/auth.js";
-import rateLimit from 'express-rate-limit';
+import cookieParser from "cookie-parser";
+import loginLimiter from "./src/middlewares/loginLimiter.js";
 
 dotenv.config();
 
 const app = express();
 app.set('trust proxy', 1);
+app.use(cookieParser());
 
-const loginLimiter = rateLimit({
-  windowMs: 1 * 60 * 1000, 
-  max: 5, 
-  message: { error: "Houveram muitas tentativas, tente novamente mais tarde." },
-  standardHeaders: true,
-  legacyHeaders: false,
-});
 
-app.use(cors());
-app.use(express.json()); // primeiro
-app.use("/auth", loginLimiter, authRoutes); // depois
+app.use(cors({
+  origin: 'http://localhost:5173',
+  credentials: true
+}));
+app.use(express.json()); 
+app.use("/auth", authRoutes); 
 
 app.get("/", async(req, res) => {
   const { data, error } = await supabase.from("transactions").select("*");
