@@ -2,8 +2,24 @@ import React, { useState, useRef, useEffect } from 'react'
 import {CircleX} from 'lucide-react'
 import ThemeToggle from './ThemeToggle';
 import CsvUploadButton from './CsvUploadButton';
+import { useUser } from "@/contexts/UserContext"
+import { supabase } from '@/supabaseClient';
+import { useNavigate } from 'react-router-dom';
 
 export default function ConfigModal({ isOpen, setIsOpen }) {
+  const navigate = useNavigate()
+  const [error, setError] = useState('');
+
+  const handleSignout = async () => {
+    const {error} = await supabase.auth.signOut()
+  
+    if (error) {
+      setError(error)
+    } else {
+      navigate('/')
+    }
+  }
+  const { user } = useUser()
     const [activeTab, setActiveTab] = useState('geral');
 
     const modalRef = useRef(null);
@@ -30,12 +46,17 @@ useEffect(() => {
   return (
 
 <div className = "flex flex-col fixed inset-0 bg-black/50 backdrop-blur-sm z-[999999] items-center ">
+        {/* faixa de fechar */}
         <div className = "w-full flex ">
             <button onClick={() => setIsOpen(!isOpen)} className = " py-2 px-2 flex items-center w-full justify-end ">
                 <CircleX size={27} />
             </button>
         </div>
+
+        {/* CARD */}
         <div className = "flex gap-4 bg-background h-[600px] w-[600px] rounded-lg mt-20 p-4"ref={modalRef}>
+
+        {/* navegação */}
         <div className = "flex flex-col w-40">
            
             <h1 className = "font-semibold mb-10">
@@ -66,7 +87,10 @@ useEffect(() => {
             
 
         </div>
+
         <div className="h-full w-px bg-zinc-700" />
+
+        {/* aba */}
         <div className="w-full">
   {activeTab === 'geral' && (
     <div className = "flex flex-col items-center justify-center gap-5">
@@ -78,12 +102,12 @@ useEffect(() => {
             </h1>
             <ThemeToggle />
         </div>
-        <div className = "w-full bg-sidebar h-32 rounded-lg border-zinc-500 p-4  gap-5 flex flex-col">
-          <div className = "group relative flex gap-3 items-center">
-            <h1 className = "text-sm font-semibold tracking-wide">
+        <div className = "w-full bg-sidebar h-32 rounded-lg border-zinc-500 p-4  gap-5 flex flex-col ">
+          <div className = "group relative flex gap-3 items-center ">
+            <h1 className = "text-sm font-semibold tracking-wide ">
                 Importar novo CSV 
             </h1>
-            <button  className={`w-[34px] h-[34px] flex items-center justify-center rounded-lg text-[#9090a8] hover:bg-sidebar-hover hover:text-[#e0e0ef] transition-colors  ${
+            <button  className={`w-[34px] h-[34px] flex items-center justify-center rounded-lg text-[#9090a8] hover:bg-sidebar-hover hover:text-[#e0e0ef] transition-colors self-start ${
                     isOpen ? 'bg-sidebar-hover' : ''
                   }`}>
           <svg className="w-[18px] h-[18px]" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
@@ -105,7 +129,34 @@ useEffect(() => {
     
   )}
   {activeTab === 'conta' && (
-    <h1>Configurações da Conta</h1>
+   
+    <div className = "flex flex-col items-center justify-center gap-5">
+    <h1 className = "self-start font-se ">Configurações da Conta</h1>
+    <div className = "w-full bg-sidebar h-32 rounded-lg border-zinc-500 p-4  gap-5 flex flex-col ">
+      <h1 className = "text-sm font-semibold tracking-wide">
+        Sua conta
+      </h1>
+      <div className = "justify-between flex gap-5 items-center">
+        <div className = "flex gap-5 items-center">
+{user?.user_metadata?.avatar_url 
+      ? <img src={user.user_metadata.avatar_url} className=" h-10 w-10 rounded-md object-cover" referrerPolicy="no-referrer"/>
+      : getIniciais(user?.user_metadata?.full_name )
+    }
+    <p className="text-sm font-medium text-foreground truncate">
+      {user?.user_metadata?.full_name || user?.email?.split("@")[0]}
+    </p>
+        </div>
+        
+    <button className = "py-2 px-2 bg-red-700 rounded-lg text-white" onClick={handleSignout}>
+      Deslogar
+    </button>
+      </div>
+      
+    </div>
+    </div>
+    
+    
+
 
 
   )}

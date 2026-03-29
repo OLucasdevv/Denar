@@ -133,7 +133,7 @@ const features = [
             </div>
         </section>
         
-        <section className = "h-[840px]">
+        <section  id="funcionalidades" className = "h-[840px]">
             <div className = "flex flex-col gap-10 items-center">
                 <div ref={ref1}
         className={` flex flex-col gap-9 items-center transition-all duration-1000   ${

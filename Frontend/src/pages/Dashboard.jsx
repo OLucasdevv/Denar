@@ -11,6 +11,7 @@ import CategoryTable from '@/components/charts/CategoryTable';
 const Dashboard = () => {
   return (
     <main className="flex bg-background">
+    
       <Sidebar />
 
       <div className="flex flex-col w-full">

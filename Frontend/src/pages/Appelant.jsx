@@ -5,7 +5,7 @@ const Appelant = () => {
 <main>
             <main className = "flex bg-background">
             <div>
-                <Sidebar />
+                <div><Sidebar /></div>
                 
             </div>
 

@@ -32,7 +32,9 @@ const Navbar = () => {
                         Criar conta
                     </li>
                     <li className="hover:text-primary cursor-pointer transition-colors">
-                        Funcionalidades
+                        <a href="#funcionalidades" className="cursor-pointer block">
+    Funcionalidades
+  </a>
                     </li>
                 </ul>
             </div>

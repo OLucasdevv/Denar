@@ -78,7 +78,7 @@ body { overflow-x: hidden; }
   --shadow-light: #ffffff;
     
     /* Sidebar Light */
-    --sidebar: oklch(0.985 0 0);
+    --sidebar: oklch(95.815% 0.00011 271.152);
     --sidebar-foreground: oklch(0.145 0 0);
     --sidebar-primary: oklch(0.205 0 0);
     --sidebar-primary-foreground: oklch(0.985 0 0);
@@ -98,7 +98,7 @@ body { overflow-x: hidden; }
     --sidebar: #202022;
     --sidebar-foreground: #e4e4e7CC;
     --sidebar-border: #e4e4e71a;
-    --sidebar-hover: #2e2e30;
+    --sidebar-hover: #2a2a2c;
    --bg-accent: #c9c9d6;
     
     /* 3. Cards e Itens de destaque (denar-accent - tom mais claro) */
