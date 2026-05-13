@@ -9,7 +9,8 @@ import Onboarding from "@/pages/Onboarding";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import { useLocation } from 'react-router-dom';
 import { useEffect } from "react";
-
+import AuthLayout from "@/components/layouts/AuthLayout";
+import Tendencies from "@/pages/Tendencies";
 
 const ThemeWatcher = () => {
   const location = useLocation();
@@ -44,17 +45,34 @@ const App = () => {
         <Route path="/onboarding" element={<Onboarding />} />
         
         <Route path="/dashboard" element={
-          <ProtectedRoute>
-            <Dashboard />
-          </ProtectedRoute>
+          <AuthLayout>
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          </AuthLayout>
         } />
         
-        <Route path="/transacoes" element={<Transactions />} />
+        <Route path="/transacoes" element={
+          <AuthLayout>
+            <ProtectedRoute>
+                <Transactions />
+            </ProtectedRoute>
+          </AuthLayout>
+          } />
         
         <Route path="/recorrentes" element={
-          <ProtectedRoute>
-            <Appelant />
-          </ProtectedRoute>
+          <AuthLayout>
+            <ProtectedRoute>
+                <Appelant />
+            </ProtectedRoute>
+          </AuthLayout>
+        } />
+        <Route path="/tendencias" element={
+          <AuthLayout>
+            <ProtectedRoute>
+                <Tendencies />
+            </ProtectedRoute>
+          </AuthLayout>
         } />
       </Routes>
     </BrowserRouter>

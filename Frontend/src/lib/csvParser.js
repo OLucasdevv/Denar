@@ -1,3 +1,6 @@
+import { categorizarTransacao } from "./categorizer"
+import { formatDateShort } from "./formatters"
+
 export function detectBank(linhas) {
   const header = linhas.find(linha => 
     linha.includes("Data Lan") || 
@@ -30,12 +33,24 @@ export function readCSV(file) {
     .filter(linha => linha.length > 0)
     .map(linha => {
       const campos = linha.split(";")
+      const isoDate = campos[0].split("/").reverse().join("-");
+      const transacao = {
+    type: campos[1]?.trim(),
+    description: campos[2]?.trim()
+  }
       return {
-        date: campos[0].split("/").reverse().join("-"),
+        date: isoDate,
+        dateFormatted: formatDateShort(isoDate),
         type: campos[1]?.trim(),
         description: campos[2]?.trim(),
-        amount: parseFloat(campos[3]?.replace(",", ".")),
-        balance: parseFloat(campos[4]?.replace(",", "."))
+        amount: parseFloat(
+  campos[3]?.replace(/\./g, "").replace(",", ".")
+),
+        balance: parseFloat(campos[4]?.replace(",", ".")),
+        categoria: categorizarTransacao({ 
+    type: campos[1]?.trim(), 
+    description: campos[2]?.trim() 
+  })
       }
     })
 }

@@ -5,15 +5,35 @@ import EyeOffIcon from '/public/eye-off.svg'
 import { useNavigate } from "react-router-dom";
 import LoadingSpinner from "@/components/effects/LoadingSpinner";
 import { supabase } from "@/supabaseClient";
+import { useLocation } from "react-router-dom";
+import { useEffect } from "react";
 
 
 const LoginPage = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  const [showMessage, setShowMessage] = useState(false);
   const [error, setError] = useState('');
+  const location = useLocation();
+  const message = location.state?.message;
   const [senha, setSenha] = useState ('');
   const [email, setEmail] = useState ('');
   const [loading, setLoading] = useState(false);
   const [passwordtoggle, setpasswordtoggle] = useState (true);
+
+  useEffect(() => {
+  if (message) {
+    setShowMessage(true);
+
+    const timer = setTimeout(() => {
+      setShowMessage(false);
+
+      
+      window.history.replaceState({}, document.title);
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }
+}, [message]);
 
   const handleGoogle = async () => {
   await supabase.auth.signInWithOAuth({ 
@@ -75,13 +95,28 @@ const handleSubmit = async (e) => {
 
   
   return (
+    
     <section className="h-screen bg-zinc-900">
+      {message && (
+  <div
+    className={`
+      fixed top-4 right-4 z-50
+      px-4 py-2 rounded-lg shadow-lg
+      bg-red-600/10 text-red-700
+      transition-all duration-500
+      ${showMessage ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4"}
+    `}
+  >
+    {message}
+  </div>
+)}
       
       <div className="flex items-center justify-center h-full">
+        
         <div className="flex flex-col min-h-[600px] w-[450px] bg-[#0f0f0f] p-6 rounded-md gap-7 shadow-2xl shadow-black">
           
-          <h1 className="text-3xl tracking-wider font-medium self-center text-white">
-            Entrar no DENAR
+          <h1 className="text-3xl tracking-wider font-medium self-center text-white ">
+            Entrar no <span className = "bg-gradient-to-r from-primary to-orange-700 bg-clip-text text-transparent">DENAR</span>
           </h1>
 
           <p className="self-center text-zinc-300">

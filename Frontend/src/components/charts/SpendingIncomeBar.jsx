@@ -11,7 +11,7 @@ const SpendingIncomeBar = ({ spent = 2540.80, income = 3240.20 }) => {
     
     <div className="flex flex-col items-center gap-1">
       <span className="text-[10px] text-zinc-500">Ganho</span>
-      <div className="w-2 bg-green-500/20 rounded-full relative" style={{ height: '36px' }}>
+      <div className="w-2 bg-green/20 rounded-full relative" style={{ height: '36px' }}>
         <div className="absolute bottom-0 w-full bg-green-700 rounded-full" style={{ height: '100%' }} />
       </div>
     </div>

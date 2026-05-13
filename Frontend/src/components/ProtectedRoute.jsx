@@ -7,27 +7,39 @@ const ProtectedRoute = ({ children }) => {
   const [tokenValido, setTokenValido] = useState(undefined)
 
   useEffect(() => {
-    async function getSession() {
-        const { data: { session } } = await supabase.auth.getSession()
-        setSession(session)
+    
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, currentSession) => {
+      setSession(currentSession)
 
-        const response = await fetch('http://localhost:3333/auth/verify', {
-  credentials: 'include'
-})
-const isValid = response.ok 
-setTokenValido(isValid)
+      
+      if (currentSession) {
+        try {
+          const response = await fetch('http://localhost:3333/auth/verify', {
+            credentials: 'include'
+          })
+          setTokenValido(response.ok)
+        } catch (error) {
+          setTokenValido(false)
+        }
+      } else {
         
-        
-    }
-    getSession()
+        setTokenValido(false)
+      }
+    })
+
+    
+    return () => subscription.unsubscribe()
   }, [])
 
-  // enquanto carrega
-  if (session === undefined || tokenValido === undefined) return null
+  if (session === undefined || tokenValido === undefined) {
+    return null 
+  }
 
-if (!session || !tokenValido) return <Navigate to="/loginpage" />
+  if (!session || !tokenValido) {
+    return <Navigate to="/loginpage" replace state={{ message: "Sua sessão expirou. Faça login novamente." }} />
+  }
 
-  // se tiver sessão, renderiza a página
+  
   return children
 }
 

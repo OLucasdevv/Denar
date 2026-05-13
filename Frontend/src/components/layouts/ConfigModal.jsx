@@ -7,16 +7,19 @@ import { supabase } from '@/supabaseClient';
 import { useNavigate } from 'react-router-dom';
 
 export default function ConfigModal({ isOpen, setIsOpen }) {
+  const getIniciais = (nome) => {
+  if (!nome) return '?'
+  return nome.split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase()
+}
   const navigate = useNavigate()
   const [error, setError] = useState('');
 
   const handleSignout = async () => {
     const {error} = await supabase.auth.signOut()
-  
     if (error) {
-      setError(error)
+      setError(error.message)
     } else {
-      navigate('/')
+      navigate("/")
     }
   }
   const { user } = useUser()
@@ -32,10 +35,10 @@ useEffect(() => {
     }
   };
 
-  // Ativa o ouvinte quando o modal abre
+  
   document.addEventListener("mousedown", handleClickOutside);
   
-  // Limpa o ouvinte quando o modal fecha (importante para performance!)
+ 
   return () => {
     document.removeEventListener("mousedown", handleClickOutside);
   };
@@ -137,28 +140,29 @@ useEffect(() => {
         Sua conta
       </h1>
       <div className = "justify-between flex gap-5 items-center">
-        <div className = "flex gap-5 items-center">
+        <div className = "flex collaps gap-5 items-center">
 {user?.user_metadata?.avatar_url 
       ? <img src={user.user_metadata.avatar_url} className=" h-10 w-10 rounded-md object-cover" referrerPolicy="no-referrer"/>
       : getIniciais(user?.user_metadata?.full_name )
     }
-    <p className="text-sm font-medium text-foreground truncate">
-      {user?.user_metadata?.full_name || user?.email?.split("@")[0]}
+    <div className = "flex flex-col gap-1">
+<p className="text-sm font-medium text-foreground truncate">
+      {user?.user_metadata?.full_name}
     </p>
+    <p className="text-sm font-medium text-foreground truncate tracking-tighter">
+      {user?.email}
+    </p>
+    </div>
+    
         </div>
         
-    <button className = "py-2 px-2 bg-red-700 rounded-lg text-white" onClick={handleSignout}>
+    <button className = "py-1 px-6 bg-red rounded-lg text-white" onClick={handleSignout}>
       Deslogar
     </button>
       </div>
       
     </div>
     </div>
-    
-    
-
-
-
   )}
 </div>
         </div>

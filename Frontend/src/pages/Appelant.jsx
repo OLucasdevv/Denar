@@ -1,25 +1,9 @@
-import Sidebar from "@/components/navigationbars/Sidebar";
-import Navbar from "@/components/navigationbars/Navbar";
 const Appelant = () => {
     return (
-<main>
-            <main className = "flex bg-background">
-            <div>
-                <div><Sidebar /></div>
-                
-            </div>
-
-           
-
-
-            <div className = "flex grid-cols-4 columns-auto  w-full">
-                                    <div className = "w-full">
-                                        <Navbar />
-                                    </div>
-                        
-                                    </div>
-            </main>
-        </main>
+        <div className="p-6">
+            <h1 className="text-foreground text-xl font-semibold">Recorrentes</h1>
+            <p className="text-zinc-500 mt-2">Conteúdo da página de recorrentes.</p>
+        </div>
     )
 };
 export default Appelant

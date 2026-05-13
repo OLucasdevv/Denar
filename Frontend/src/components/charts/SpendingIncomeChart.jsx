@@ -6,6 +6,8 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "../ui/chart"
+import { Variacao } from "../insights/Porcentage";
+import usePace from "@/hooks/UsePace";
 
 // 1. VOCÊ PRECISA DISSO AQUI EM CIMA:
 // É esse objeto que faz o link entre o dado "valor" e a cor que você quer
@@ -23,25 +25,8 @@ const chartConfig = {
 }
 
 const SpendingIncomeChart = () => {
-  const dadosFinanceiros = [
-  { dia: "01", atual: 190.50, passado: 210.30 },
-  { dia: "02", atual: 380.20, passado: 390.80 },
-  { dia: "03", atual: 380.20, passado: 390.80 },
-  { dia: "04", atual: 570.80, passado: 610.20 },
-  { dia: "05", atual: 570.80, passado: 610.20 },
-  { dia: "06", atual: 760.40, passado: 820.50 },
-  { dia: "07", atual: 950.10, passado: 1020.30 },
-  { dia: "08", atual: 1140.60, passado: 1240.70 },
-  { dia: "09", atual: 1140.60, passado: 1240.70 },
-  { dia: "10", atual: 1520.30, passado: 1650.40 },
-  { dia: "11", atual: 1710.90, passado: 1840.20 },
-  { dia: "12", atual: 1900.50, passado: 2050.80 },
-  { dia: "13", atual: 2090.20, passado: 2260.40 },
-  { dia: "14", atual: 2280.70, passado: 2480.90 },
-  { dia: "15", atual: 2660.40, passado: 2750.60 },
-  { dia: "16", atual: 2950.30, passado: 3010.80 },
-  { dia: "17", atual: 3240.20, passado: 3580.50 },
-];
+  const dadosGanhos = usePace("ganho")  
+  const ultimo = dadosGanhos.at(-1) || { atual: 0, passado: 0 }
 
   return (
     <div className=" flex flex-col  p-5  shadow-neu-card rounded-lg w-full  bg-background  gap-3  ">
@@ -56,11 +41,16 @@ const SpendingIncomeChart = () => {
        */}
 
       <div className = "flex gap-4 items-center ">
-          <p className = "font-space text-2xl ">
-            R$ 3.240,20
+          <p className = "font-space text-2xl text-green">
+            R$ {ultimo.atual.toFixed(2).replace('.', ',')}
           </p>
           <p className = "will-change-contents shadow-neu-badge rounded-lg p-1 bg-background text-foreground text-xs inline-block whitespace-nowrap text-red-600 ">
--10% vs mês passado 
+
+<Variacao 
+  atual={ultimo.atual} 
+  passado={ultimo.passado} 
+  tipo = "ganho"
+/>
           </p>
       </div>
 
@@ -90,7 +80,7 @@ const SpendingIncomeChart = () => {
       
       
       <ChartContainer config={chartConfig} className="h-[170px] w-full">
-        <AreaChart data={dadosFinanceiros}>
+        <AreaChart data={dadosGanhos}>
           <CartesianGrid vertical={false} stroke="#27272a" />
           
           <XAxis

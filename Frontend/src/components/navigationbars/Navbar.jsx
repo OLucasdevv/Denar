@@ -1,4 +1,3 @@
-
 import { useLocation } from "react-router-dom";
 
 const menuItems = [
@@ -14,7 +13,7 @@ export default function Navbar() {
     menuItems.find((item) => pathname.startsWith(item.path))?.label ?? "Visão Geral";
 
   return (
-    <nav className="flex items-center justify-between bg-sidebar shadow-neu-card  px-6 h-[52px] w-full  top-0  z-[9999] ">
+    <nav className="flex-none flex items-center justify-between bg-sidebar shadow-neu-card px-6 h-[52px] w-full z-20">
 
       {/* Esquerda — título dinâmico */}
       <div className="flex items-center gap-2.5">
@@ -38,7 +37,13 @@ export default function Navbar() {
           <span className="absolute top-[7px] right-[7px] w-[6px] h-[6px] bg-primary rounded-full border-[1.5px] border-[#1c1c2e]" />
         </button>
 
-        
+        <button className="w-[34px] h-[34px] flex items-center justify-center rounded-lg text-[#9090a8] hover:bg-sidebar-hover hover:text-[#e0e0ef] transition-colors">
+          <svg className="w-[18px] h-[18px]" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="10" />
+            <line x1="12" y1="16" x2="12" y2="12" />
+            <line x1="12" y1="8" x2="12.01" y2="8" />
+          </svg>
+        </button>
       </div>
     </nav>
   );

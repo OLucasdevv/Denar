@@ -9,7 +9,7 @@ export const useSmoothScroll = () => {
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       smoothWheel: true,
       wheelMultiplier: 1,
-      lerp: 0.1, // Quanto menor, mais "pesado/suave" é o scroll
+      lerp: 0.15, // Quanto menor, mais "pesado/suave" é o scroll
     });
 
     // O "coração" da animação: liga o Lenis ao RequestAnimationFrame do navegador

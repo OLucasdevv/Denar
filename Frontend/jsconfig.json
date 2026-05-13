@@ -1,9 +1,10 @@
 {
   "compilerOptions": {
     "baseUrl": ".",
+    "ignoreDeprecations": "6.0", //will stop working in typescript 7.0
     "paths": {
       "@/*": ["./src/*"]
     }
-    // ... o resto das suas configs
+    
   }
 }

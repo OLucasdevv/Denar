@@ -9,6 +9,8 @@ export default {
         space: ['"Space Grotesk"', 'sans-serif'],
       },
       colors: {
+        "green": "#15803d",
+        "red": "#dc2626",
         sidebar: {
           DEFAULT: "var(--sidebar)",
           foreground: "var(--sidebar-foreground)",

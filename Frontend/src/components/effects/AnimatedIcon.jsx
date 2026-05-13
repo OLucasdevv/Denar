@@ -2,7 +2,7 @@ import Lottie from "lottie-react";
 import { useRef, useEffect } from "react";
 
 const BLACK_RE = /^(#000|#000000|rgb\(0,\s*0,\s*0\)|rgba\(0,\s*0,\s*0,\s*1\)|black)$/i;
-const BRAND_COLORS = ['#f97316']; // adicione aqui os hexes/strings do laranja da sua marca
+const BRAND_COLORS = ['#f97316']; 
 
 const isBrand = (c) => {
   if (!c) return false;

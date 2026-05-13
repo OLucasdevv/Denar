@@ -6,9 +6,9 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "../ui/chart"
+import usePace from "@/hooks/UsePace";
+import { Variacao } from "../insights/Porcentage";
 
-// 1. VOCÊ PRECISA DISSO AQUI EM CIMA:
-// É esse objeto que faz o link entre o dado "valor" e a cor que você quer
 const chartConfig = {
   
   atual: {
@@ -23,25 +23,9 @@ const chartConfig = {
 }
 
 const SpendingPaceChart = () => {
-  const dadosFinanceiros = [
-  { dia: "01", atual: 45.90, passado: 32.50 },
-  { dia: "02", atual: 98.40, passado: 89.20 },
-  { dia: "03", atual: 98.40, passado: 145.80 },
-  { dia: "04", atual: 210.30, passado: 198.40 },
-  { dia: "05", atual: 314.12, passado: 310.20 },
-  { dia: "06", atual: 340.80, passado: 420.90 },
-  { dia: "07", atual: 520.50, passado: 580.30 },
-  { dia: "08", atual: 620.90, passado: 690.10 },
-  { dia: "09", atual: 620.90, passado: 780.50 },
-  { dia: "10", atual: 750.20, passado: 920.40 },
-  { dia: "11", atual: 840.60, passado: 1050.80 },
-  { dia: "12", atual: 940.30, passado: 1180.20 },
-  { dia: "13", atual: 940.30, passado: 1290.60 },
-  { dia: "14", atual: 1000.70, passado: 1420.30 },
-  { dia: "15", atual: 1280.40, passado: 1580.90 },
-  { dia: "16", atual: 1450.20, passado: 1720.40 },
-  { dia: "17", atual: 1870.00, passado: 2540.80 },
-];
+  
+  const dadosGastos = usePace("gasto")  
+  const ultimo = dadosGastos.at(-1) || { atual: 0, passado: 0 }
 
   return (
     <div className=" flex flex-col  p-5  shadow-neu-card rounded-lg w-full  bg-background  gap-3  ">
@@ -56,17 +40,21 @@ const SpendingPaceChart = () => {
        */}
 
       <div className = "flex gap-4 items-center ">
-          <p className = "font-space text-2xl">
-            R$ 2.540,80
+          <p className = "font-space text-2xl text-red">
+            R$ {ultimo.atual.toFixed(2).replace('.', ',')}
           </p>
-          <p className = "will-change-contents shadow-neu-badge rounded-lg p-1 bg-background text-foreground text-xs inline-block whitespace-nowrap text-green-700 ">
-+26% vs mês passado 
+          <p className = "will-change-contents shadow-neu-badge rounded-lg p-1 bg-background text-foreground text-xs inline-block whitespace-nowrap text-green">
+<Variacao 
+  atual={ultimo.atual} 
+  passado={ultimo.passado} 
+  tipo = "gasto"
+/>
           </p>
       </div>
 
       <div className = "flex gap-2 ">
           <div className = "flex items-center gap-2">
-            <div className = "bg-red-600 h-2.5 w-2.5">
+            <div className = "bg-red h-2.5 w-2.5">
 
             </div>
             <p className = "text-sm">
@@ -90,7 +78,7 @@ const SpendingPaceChart = () => {
       
       
       <ChartContainer config={chartConfig} className="h-[170px] w-full">
-        <AreaChart data={dadosFinanceiros}>
+        <AreaChart data={dadosGastos}>
           <CartesianGrid vertical={false} stroke="#27272a" />
           
           <XAxis

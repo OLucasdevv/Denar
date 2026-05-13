@@ -9,7 +9,8 @@ import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/supabaseClient';
 import { useUser } from "@/contexts/UserContext"
 import ConfigModal from '../layouts/ConfigModal';
-
+import TendenciesIcon from '../../assets/icons/Tendencies.json';
+import Tendencies from '@/pages/Tendencies';
 
 
 
@@ -19,6 +20,7 @@ import ConfigModal from '../layouts/ConfigModal';
 const Sidebar = () => {
   const { user } = useUser()
   const navigate = useNavigate()
+  const location = useLocation();
 const [Error, setError] = useState(false);
 const [Loading, setLoading] = useState('');
 const [isOpen, setIsOpen] = useState(false);
@@ -50,24 +52,24 @@ const getIniciais = (nome) => {
   };
 
   const [hoveredId, setHoveredId] = useState(null);
-  const { pathname } = useLocation();
 
   const menuItems = [
   { id: 1, label: 'Visão Geral',   path: '/dashboard', icon: homeIconData },
   { id: 2, label: 'Transações',  path: '/transacoes',  icon: TransactionIcon },
   { id: 3, label: 'Recorrentes', path: '/recorrentes', icon: appellant },
+  { id: 4, label: 'Tendências', path: '/tendencias', icon: TendenciesIcon },
 ];
 
   return (
 
     <nav className="flex flex-col h-screen bg-sidebar w-60 p-4 shadow-neu-card  gap-10">
       
-      <h1 className="text-foreground text-2xl tracking-wide self-start font-poppins">
+      <h1 className="text-foreground text-2xl font-medium tracking-wide self-start font-poppins bg-gradient-to-r from-primary to-orange-700 bg-clip-text text-transparent">
         DENAR
       </h1>
 
       <div className="flex flex-col gap-4">
-        <h1 className="text-foreground text-[10px] uppercase tracking-widest font-bold">
+        <h1 className="text-foreground text-[10px] uppercase tracking-widest font-medium">
           Finanças
         </h1>
         {menuItems.map((item) => {
@@ -129,7 +131,10 @@ const getIniciais = (nome) => {
 <ConfigModal isOpen={isOpen} setIsOpen={setIsOpen} />        
         
       )}
+      
     </nav>
+    
+
   );
 };
 
