@@ -2,17 +2,17 @@ import { useFinancialHealth } from "@/hooks/useFinancialHealth"
 
 const Barra = ({ label, valor, pct, cor }) => (
   <div className="flex items-center gap-3">
-    <p className="text-xs text-zinc-500 w-36 shrink-0">{label}</p>
+    <p className="text-xs text-foreground w-36 shrink-0">{label}</p>
     <div className="flex-1 h-1.5 bg-zinc-800 rounded-full overflow-hidden">
       <div
         className="h-full rounded-full transition-all duration-500"
         style={{ width: `${Math.min(pct, 100)}%`, backgroundColor: cor }}
       />
     </div>
-    <p className="text-xs font-medium w-24 text-right text-zinc-300">
+    <p className="text-xs font-medium w-24 text-right text-foreground">
       R$ {valor.toFixed(2).replace(".", ",")}
     </p>
-    <p className="text-xs text-zinc-600 w-8 text-right">{pct}%</p>
+    <p className="text-xs text-foreground w-8 text-right">{pct}%</p>
   </div>
 )
 
@@ -42,7 +42,7 @@ const SaudeBar = () => {
       </div>
 
       <div className="border-t border-zinc-800 pt-3 flex justify-between items-center">
-        <p className="text-xs text-zinc-500">Saldo real</p>
+        <p className="text-xs text-foreground">Saldo real</p>
         <p className={`text-sm font-space ${saldoReal >= 0 ? "text-green-500" : "text-red-500"}`}>
           {saldoReal < 0 ? "-" : ""}R$ {Math.abs(saldoReal).toFixed(2).replace(".", ",")}
         </p>

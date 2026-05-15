@@ -119,7 +119,7 @@ const RegisterPage = () => {
             </h1>
 
             <p className="self-center text-zinc-300">
-              digite seu email e senha para continuar
+              Comece em menos de 1 minuto.
             </p>
 
             <button
@@ -184,7 +184,11 @@ const RegisterPage = () => {
                 onClick={handleSubmit}
                 type="submit"
                 disabled={loading}
-                className="flex items-center justify-center bg-gradient-to-r from-primary to-orange-700 w-full h-10 rounded-lg text-black font-medium mt-5 hover:bg-gradient-to-l hover:from-orange-700 hover:to-primary transition"
+                className="flex items-center justify-center w-full h-10 rounded-lg text-black font-medium mt-5 bg-gradient-to-r from-primary via-orange-700 to-orange-400 
+  bg-[length:200%_auto] 
+  shadow-md 
+  transition-all duration-500 ease-out
+  hover:bg-right  hover:shadow-primary hover:-translate-y-0.1 hover:shadow-md"
               >
                 {loading ? <LoadingSpinner color="#000000" size="h-5 w-5" /> : "Criar conta"}
               </button>
