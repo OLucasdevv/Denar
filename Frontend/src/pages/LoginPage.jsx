@@ -203,7 +203,11 @@ const handleSubmit = async (e) => {
     {error}
   </p>
 )}
-          <button onClick= {handleSubmit} className=" flex items-center justify-center bg-gradient-to-r from-primary to-orange-700 w-full  h-10 rounded-lg text-black font-medium mt-5 hover:bg-gradient-to-l hover:from-orange-700 hover:to-primary transition">
+          <button onClick= {handleSubmit} className=" flex items-center justify-center bg-gradient-to-r from-primary via-orange-700 to-orange-400 
+  bg-[length:200%_auto] 
+  shadow-md 
+  transition-all duration-500 ease-out
+  hover:bg-right  hover:shadow-primary hover:-translate-y-0.1 hover:shadow-md w-full  h-10 rounded-lg text-black font-medium mt-5 ">
             {!loading && (
               "Entrar"
             )}

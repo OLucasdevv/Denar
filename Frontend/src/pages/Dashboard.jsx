@@ -9,6 +9,8 @@ import CsvUploadButton from "@/components/layouts/CsvUploadButton";
 import Recorrentes from "@/components/layouts/Recorrentes";
 import MoneyDestiny from "@/components/layouts/MoneyDestiny";
 import TextType from "@/components/effects/TextType";
+import FinancialScore from "@/components/layouts/FinancialScore";
+import VariableChart from "@/components/charts/VariableChart";
 
 const Dashboard = () => {
   const {transacoes} = useFinance();
@@ -51,8 +53,8 @@ const Dashboard = () => {
     <div className="flex-1 flex flex-col min-h-0 bg-background">
 
       {/* CONTAINER PRINCIPAL */}
-      <div className="w-full h-full overflow-y-auto p-1">
-        <div className="max-w-[1400px] mx-auto space-y-5">
+      <div className="flex flex-col w-full overflow-y-auto min-h-0 ">
+        <div className="flex-1 flex flex-col p-3 gap-5">
           
           {/* HEADER */}
           
@@ -88,9 +90,9 @@ const Dashboard = () => {
 
           {/* BAIXO */}
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-  <Recorrentes />
-  <div className="bg-zinc-800 min-h-[220px] rounded-xl" />
-  <div className="bg-zinc-800 min-h-[220px] rounded-xl" />
+  <div className="h-[318px]"><Recorrentes /></div>
+  <div className="h-[318px]"><VariableChart /></div>
+  <div className="h-[318px]"><FinancialScore /></div>
 </div>
           </>
           ) : (

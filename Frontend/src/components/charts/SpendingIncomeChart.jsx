@@ -81,6 +81,13 @@ const SpendingIncomeChart = () => {
       
       <ChartContainer config={chartConfig} className="h-[170px] w-full">
         <AreaChart data={dadosGanhos}>
+          <defs>
+            <linearGradient id="grad-atual-green" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#15803d" stopOpacity={0.85} />
+              <stop offset="60%" stopColor="#15803d" stopOpacity={0.25} />
+              <stop offset="100%" stopColor="#15803d" stopOpacity={0} />
+            </linearGradient>
+          </defs>
           <CartesianGrid vertical={false} stroke="#27272a" />
           
           <XAxis
@@ -112,11 +119,10 @@ const SpendingIncomeChart = () => {
           <Area
             dataKey="atual"
             type="monotone"
-            fill="#15803d" 
-            fillOpacity={0.3}
-            stroke="#15803d" // Cor da linha
+            fill="url(#grad-atual-green)"
+            stroke="#15803d"
             strokeWidth={2}
-            activeDot={{ r: 6, fill: "#16a34a", stroke: "#18181b", strokeWidth: 2 }}
+            activeDot={{ r: 6, fill: "#16a34a", stroke: "#18181b", strokeWidth: 1 }}
           />
           <Area
             dataKey="passado"
@@ -125,7 +131,7 @@ const SpendingIncomeChart = () => {
             fillOpacity={0}
             strokeDasharray="5 5"
             stroke="#52525b" // Cor da linha
-            strokeWidth={3}
+            strokeWidth={2}
             activeDot={{ r: 6, fill: "#16a34a", stroke: "#18181b", strokeWidth: 2 }}
           />
         </AreaChart>

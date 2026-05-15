@@ -1,6 +1,8 @@
 import { parseDate, getDateContext, isSameMonth } from "./dateUtils"
+import { classificarFluxo } from "./financialHealth"
 
 const getPace = (transacoes, filtro) => {
+  
   if (!transacoes || transacoes.length === 0) return []
 
   const ctx = getDateContext(transacoes)
@@ -40,6 +42,37 @@ const getPace = (transacoes, filtro) => {
   }
 
   return resultado
+}
+
+export function getVariavelPace(transacoes) {
+  const resultado = classificarFluxo(transacoes)
+  if (!resultado) return []
+
+  const ctx = getDateContext(transacoes)  // ← usa o mesmo contexto do classificarFluxo
+  if (!ctx) return []
+
+  const { mesBase, anoBase, diaLimite } = ctx
+
+  const filtradas = resultado.transacoesClassificadas.filter(t => {
+    const { ano, mes } = parseDate(t.date)  // ← usa parseDate igual ao resto
+    return (
+      t.fluxo === "variavel" &&
+      isSameMonth(ano, mes, mesBase, anoBase)
+    )
+  })
+
+  const porDia = {}
+  filtradas.forEach(t => {
+    const { dia } = parseDate(t.date)
+    porDia[dia] = (porDia[dia] || 0) + Math.abs(t.amount)
+  })
+
+  let acumulado = 0
+  return Array.from({ length: diaLimite }, (_, i) => {
+    const dia = i + 1
+    acumulado += porDia[dia] || 0
+    return { dia, atual: Number(acumulado.toFixed(2)) }
+  })
 }
 const isResgate = (t) => {
   const hist = (t.historico || t.type || "").toLowerCase()

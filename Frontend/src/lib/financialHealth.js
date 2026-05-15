@@ -5,10 +5,21 @@ import { parseDate, getDateContext, isSameMonth } from "./dateUtils"
 function extrairEntidade(desc = "") {
   return desc
     .toLowerCase()
+    // remove palavras de transação
     .replace(/pix|transferencia|transferência|enviado|recebido|para|de/g, "")
+    // remove sufixos empresariais que variam entre meses
+    .replace(/\b(sa|s\.a|ltda|me|eireli|epp|bra|brasilia|brasil|br)\b/g, "")
     .replace(/[^\w\s]/g, "")
     .replace(/\s+/g, " ")
     .trim()
+}
+
+// Pega só as N primeiras palavras significativas pra agrupamento
+// Isso ajuda "TIM INTERNET FIBRA" e "TIM SA SERVICOS" agruparem como "tim"
+function chaveAgrupamento(desc = "") {
+  const entidade = extrairEntidade(desc)
+  const palavras = entidade.split(" ").filter(p => p.length > 2)
+  return palavras.slice(0, 2).join(" ") // pega até 2 palavras principais
 }
 
 function getMesAno(dateStr) {
@@ -22,8 +33,8 @@ function agruparPorEntidade(transacoes) {
   const mapa = {}
 
   transacoes.forEach(t => {
-    const nome = extrairEntidade(t.description)
-
+    const nome = chaveAgrupamento(t.description)
+    if (!nome) return
     if (!mapa[nome]) mapa[nome] = []
     mapa[nome].push(t)
   })
@@ -61,6 +72,22 @@ function detectarCirculantes(mapa) {
 
 // ---------------- FIXOS ----------------
 
+const VALOR_MINIMO_FIXO = 25 // ignora cobranças abaixo de R$25
+
+function removerOutliers(valores) {
+  if (valores.length < 3) return valores
+
+  const sorted = [...valores].sort((a, b) => a - b)
+  const mediana = sorted[Math.floor(sorted.length / 2)]
+
+  // remove valores que sejam mais que 60% acima da mediana
+  // (ex: mês de matrícula que inflou o valor)
+  const filtrados = valores.filter(v => v <= mediana * 1.6)
+
+  // só aplica se sobrar pelo menos 2 meses
+  return filtrados.length >= 2 ? filtrados : valores
+}
+
 function detectarFixos(mapa) {
   const fixos = []
 
@@ -69,36 +96,38 @@ function detectarFixos(mapa) {
 
     mapa[nome].forEach(t => {
       if (t.amount >= 0) return
-
       const key = getMesAno(t.date)
-
       if (!porMes[key]) porMes[key] = []
       porMes[key].push(Math.abs(t.amount))
     })
 
-    const valores = Object.values(porMes).map(v =>
+    const valoresBrutos = Object.values(porMes).map(v =>
       v.reduce((a, b) => a + b, 0)
     )
 
-    if (valores.length < 2) continue
+    if (valoresBrutos.length < 2) continue
 
+    // remove outliers antes de calcular média
+    const valores = removerOutliers(valoresBrutos)
     const media = valores.reduce((a, b) => a + b, 0) / valores.length
 
-    const consistente = valores.every(v =>
-      Math.abs(v - media) / media <= 0.1
+    // ignora cobranças muito pequenas
+    if (media < VALOR_MINIMO_FIXO) continue
+
+    // tolerância de 15%, e exige que 80% dos meses sejam consistentes
+    // (mais robusto que exigir 100%)
+    const dentroDoRange = valores.filter(v =>
+      Math.abs(v - media) / media <= 0.15
     )
+    const propConsistente = dentroDoRange.length / valores.length
 
-    if (nome.includes("votorantim") || nome.includes("seguro")) {
-      console.log(`FIXO CHECK [${nome}]`, { valores, media, consistente })
-    }
+    if (propConsistente < 0.8) continue
 
-    if (consistente) {
-      fixos.push({
-        nome,
-        valor: Math.round(media),
-        frequencia: valores.length
-      })
-    }
+    fixos.push({
+      nome,
+      valor: Number(media.toFixed(2)),
+      frequencia: valoresBrutos.length
+    })
   }
 
   return fixos
@@ -125,7 +154,7 @@ function classificar(transacoes, fixos, circulantes) {
   const nomesCirc = new Set(circulantes.map(c => c.nome))
 
   return transacoes.map(t => {
-    const nome = extrairEntidade(t.description)
+    const nome = chaveAgrupamento(t.description)
 
     if (nomesCirc.has(nome)) return { ...t, fluxo: "circulante" }
     if (t.amount > 0 && isResgate(t)) return { ...t, fluxo: "resgate" }
@@ -184,7 +213,7 @@ function calcularDestino(transacoes, ctx) {
     if (t.amount >= 0) return
     if (t.fluxo === "circulante") return
 
-    const nome = extrairEntidade(t.description)
+    const nome = chaveAgrupamento(t.description)
     if (!mapa[nome]) mapa[nome] = 0
     mapa[nome] += Math.abs(t.amount)
   })
@@ -231,16 +260,15 @@ export function classificarFluxo(transacoes) {
   const classificadas = classificar(transacoes, fixos, circulantes)
 
   const metricas = calcularMetricas(classificadas, ctx)
-  // soma média mensal dos fixos detectados
-const somaFixosDetectados = fixos.reduce((s, f) => s + (f.valor || 0), 0)
-// evitar mostrar 0 se já conhecemos fixos históricos
-metricas.comprometidoFixo = Math.max(metricas.comprometidoFixo, somaFixosDetectados)
+  const somaFixosDetectados = fixos.reduce((s, f) => s + (f.valor || 0), 0)
+  metricas.comprometidoFixo = Math.max(metricas.comprometidoFixo, somaFixosDetectados)
   const destino = calcularDestino(classificadas, ctx)
   const meses = new Set(transacoes.map(t => getMesAno(t.date))).size
   const score = calcularScore(metricas, meses)
 
   return {
     ...metricas,
+    transacoesClassificadas: classificadas,
     fixosDetectados: fixos,
     circulantesDetectados: circulantes,
     destinoDoDinheiro: destino,

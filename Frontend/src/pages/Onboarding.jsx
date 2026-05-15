@@ -3,6 +3,7 @@ import Stepper, { Step } from "../components/layouts/Stepper";
 import { parseCSV } from "@/lib/csvParser";
 import { Upload } from 'lucide-react';
 import CsvUploadButton from "@/components/layouts/CsvUploadButton";
+import { useFinance } from "@/contexts/FinanceContext";
 
 
 
@@ -10,6 +11,9 @@ const Onboarding = () => {
   const [error, setError] = useState();
   const [userName, setuserName] = useState();
   const [userIncome, setuserIncome] = useState();
+  const {transacoes} = useFinance();
+  const hasData = transacoes && transacoes.length > 0
+
 
   
 
@@ -39,6 +43,8 @@ const Onboarding = () => {
 
   const name = OnboardingData.name.trim();
 
+  
+
 
   
   const invalidName =
@@ -48,7 +54,7 @@ const Onboarding = () => {
 
   const isDisabled =
     (currentStep === 2 && invalidName) ||
-    (currentStep === 3 && OnboardingData.income.trim() === "");
+    (currentStep === 3 && !hasData);
 
   return (
     <section className="h-screen bg-background">
@@ -66,7 +72,7 @@ const Onboarding = () => {
               className: `flex items-center justify-center rounded-full py-1.5 px-3.5 font-medium tracking-tight text-black ${
                 isDisabled
                   ? "bg-zinc-600 cursor-not-allowed"
-                  : "bg-gradient-to-r from-primary to-orange-700 hover:from-orange-700 hover:to-primary transition-all duration-900"
+                  : "bg-gradient-to-r from-primary active:scale-95 via-orange-400 to-orange-500 bg-[length:200%_auto] shadow-md transition-all duration-500 ease-out hover:bg-right  hover:shadow-primary hover:-translate-y-0.1 hover:shadow-md"
 
               }`,
             }}
@@ -153,7 +159,10 @@ Exportar → CSV.
                 </div>
 
                 {!isOpen && (
-                  <CsvUploadButton onClick={() => setIsOpen(!isOpen)} />
+                  <CsvUploadButton
+                   onClick={() => setIsOpen(!isOpen)}
+                   disableWhenHasData 
+                   />
 
                      
                 )}

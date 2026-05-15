@@ -7,13 +7,15 @@ const TransactionsCard = () => {
   const ultimasTransacoes = transacoes
   .sort((a, b) => new Date(b.date) - new Date(a.date))
   .slice(0, 3)
-    const [isPositive, setIsPositive] = useState()
+    const [isPositive, setIsPositive] = useState();
+    
 
    
     return (
        <div className="flex flex-col gap-5">
     {ultimasTransacoes.map((trans, index) => {
         const isNegative = trans.amount < 0
+        const hasBalance = trans.balance > 0 && trans.balance
         return (
             <div key={index} className="flex items-center justify-between w-full h-20 shadow-neu-card rounded-xl border border-zinc-800 bg-background p-2 gap-3">
             
@@ -30,7 +32,7 @@ const TransactionsCard = () => {
             {/* 2. Bloco do Texto (Ocupa o resto do espaço) */}
             <div className="flex flex-col flex-1 min-w-0">
                 <h1 className="text-foreground font-medium text-sm ">
-                    {trans.description}
+                    {trans.description.split(" - ")[0]}
                 </h1>
                 <h1 className="text-zinc-500 text-sm flex gap-1">
                     {trans.categoria.nome}
@@ -53,7 +55,15 @@ const TransactionsCard = () => {
                     </p>
                 </div>
                 <p className="text-zinc-400 text-sm flex gap-1">
-                    saldo <span className="font-space text-foreground">{trans.balance}</span>
+                    {hasBalance ? (
+                        <>
+                        saldo <span className="font-space text-foreground">{trans.balance}</span>
+                        </>
+                    ): (
+                        <>
+                        <p className = "text-foreground">saldo não disponível</p>
+                        </>
+                    )}
                 </p>
             </div>
             

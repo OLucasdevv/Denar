@@ -79,6 +79,13 @@ const SpendingPaceChart = () => {
       
       <ChartContainer config={chartConfig} className="h-[170px] w-full">
         <AreaChart data={dadosGastos}>
+          <defs>
+            <linearGradient id="grad-atual" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#dc2626" stopOpacity={0.85} />
+              <stop offset="60%" stopColor="#dc2626" stopOpacity={0.25} />
+              <stop offset="100%" stopColor="#dc2626" stopOpacity={0} />
+            </linearGradient>
+          </defs>
           <CartesianGrid vertical={false} stroke="#27272a" />
           
           <XAxis
@@ -110,9 +117,8 @@ const SpendingPaceChart = () => {
           <Area
             dataKey="atual"
             type="monotone"
-            fill="#dc2626" 
-            fillOpacity={0.3}
-            stroke="#dc2626" // Cor da linha
+            fill="url(#grad-atual)"
+            stroke="#dc2626"
             strokeWidth={2}
             activeDot={{ r: 6, fill: "#f97316", stroke: "#18181b", strokeWidth: 2 }}
           />
@@ -122,8 +128,8 @@ const SpendingPaceChart = () => {
             fill="" 
             fillOpacity={0}
             strokeDasharray="5 5"
-            stroke="#52525b" // Cor da linha
-            strokeWidth={3}
+            stroke="#3c3c3c" // Cor da linha
+            strokeWidth={2}
             activeDot={{ r: 6, fill: "#f97316", stroke: "#18181b", strokeWidth: 2 }}
           />
         </AreaChart>

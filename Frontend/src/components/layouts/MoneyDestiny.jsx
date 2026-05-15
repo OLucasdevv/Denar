@@ -5,17 +5,17 @@ const CORES = ["#3b82f6", "#ef4444", "#f97316", "#71717a", "#22c55e", "#a855f7"]
 const LinhaDestino = ({ nome, valor, pct, cor }) => (
   <div className="flex items-center gap-3">
     <div className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: cor }} />
-    <p className="text-xs text-zinc-400 w-40 shrink-0 capitalize truncate">{nome}</p>
+    <p className="text-xs text-foreground w-40 shrink-0 capitalize truncate">{nome}</p>
     <div className="flex-1 h-1.5 bg-zinc-800 rounded-full overflow-hidden">
       <div
         className="h-full rounded-full transition-all duration-500"
         style={{ width: `${Math.min(pct, 100)}%`, backgroundColor: cor }}
       />
     </div>
-    <p className="text-xs font-medium w-24 text-right text-zinc-300">
+    <p className="text-xs font-medium w-24 text-right text-foreground">
       R$ {valor.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")}
     </p>
-    <p className="text-xs text-zinc-600 w-8 text-right">{pct}%</p>
+    <p className="text-xs text-foreground w-8 text-right">{pct}%</p>
   </div>
 )
 
