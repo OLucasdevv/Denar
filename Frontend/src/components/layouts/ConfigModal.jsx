@@ -105,6 +105,7 @@ useEffect(() => {
             </h1>
             <ThemeToggle />
         </div>
+        
         <div className = "w-full bg-sidebar h-32 rounded-lg border-zinc-500 p-4  gap-5 flex flex-col ">
           <div className = "group relative flex gap-3 items-center ">
             <h1 className = "text-sm font-semibold tracking-wide ">

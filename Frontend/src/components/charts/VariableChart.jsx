@@ -71,6 +71,10 @@ const VariableChart = () => {
             stroke="#ef4444"
             strokeWidth={2}
             activeDot={{ r: 6, fill: "#ef4444", stroke: "#18181b", strokeWidth: 2 }}
+            isAnimationActive={true}
+            animationBegin={100}
+            animationDuration={900}
+            animationEasing="ease"
           />
         </AreaChart>
       </ChartContainer>

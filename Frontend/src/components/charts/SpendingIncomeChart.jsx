@@ -123,6 +123,10 @@ const SpendingIncomeChart = () => {
             stroke="#15803d"
             strokeWidth={2}
             activeDot={{ r: 6, fill: "#16a34a", stroke: "#18181b", strokeWidth: 1 }}
+            isAnimationActive={true}
+            animationBegin={100}
+            animationDuration={900}
+            animationEasing="ease"
           />
           <Area
             dataKey="passado"
@@ -133,6 +137,10 @@ const SpendingIncomeChart = () => {
             stroke="#52525b" // Cor da linha
             strokeWidth={2}
             activeDot={{ r: 6, fill: "#16a34a", stroke: "#18181b", strokeWidth: 2 }}
+            isAnimationActive={true}
+            animationBegin={120}
+            animationDuration={900}
+            animationEasing="ease"
           />
         </AreaChart>
       </ChartContainer>

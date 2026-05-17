@@ -121,6 +121,10 @@ const SpendingPaceChart = () => {
             stroke="#dc2626"
             strokeWidth={2}
             activeDot={{ r: 6, fill: "#f97316", stroke: "#18181b", strokeWidth: 2 }}
+            isAnimationActive={true}
+            animationBegin={100}
+            animationDuration={900}
+            animationEasing="ease"
           />
           <Area
             dataKey="passado"
@@ -131,6 +135,10 @@ const SpendingPaceChart = () => {
             stroke="#3c3c3c" // Cor da linha
             strokeWidth={2}
             activeDot={{ r: 6, fill: "#f97316", stroke: "#18181b", strokeWidth: 2 }}
+            isAnimationActive={true}
+            animationBegin={120}
+            animationDuration={900}
+            animationEasing="ease"
           />
         </AreaChart>
       </ChartContainer>

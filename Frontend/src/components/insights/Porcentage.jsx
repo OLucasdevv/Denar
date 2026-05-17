@@ -1,5 +1,6 @@
-export function Variacao({ atual, passado, tipo }) {
-  // Sem dados suficientes no mês anterior → não exibir %
+
+export function Variacao({ atual, passado, tipo, showSuffix = true }) {
+  
   if (!passado || passado < 10) {
     return <p className="text-zinc-500">Sem dados anteriores</p>
   }
@@ -12,7 +13,8 @@ export function Variacao({ atual, passado, tipo }) {
 
   return (
     <p className={positiva ? "text-green" : "text-red"}>
-      {variacao > 0 ? '+' : ''}{variacao.toFixed(1)}% vs mês passado
+      {variacao > 0 ? '+' : ''}{variacao.toFixed(1)}%
+      {showSuffix && " vs mês passado"}
     </p>
   )
 }

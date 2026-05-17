@@ -1,5 +1,6 @@
   import * as React from "react"
   import * as RechartsPrimitive from "recharts"
+  import { useLocation } from "react-router-dom"
 
   import { cn } from "@/lib/utils"
 
@@ -30,6 +31,16 @@
   }) {
     const uniqueId = React.useId()
     const chartId = `chart-${id || uniqueId.replace(/:/g, "")}`
+    const location = useLocation()
+
+    // mountId increments whenever the pathname/search changes so charts
+    // get a new key and remount (causing their entry animations to run).
+    const [mountId, setMountId] = React.useState(0)
+    React.useEffect(() => {
+      setMountId((v) => v + 1)
+    }, [location.pathname, location.search])
+
+    const routeKey = `${location.pathname}${location.search}:${mountId}`
 
     return (
       <ChartContext.Provider value={{ config }}>
@@ -42,12 +53,109 @@
           )}
           {...props}>
           <ChartStyle id={chartId} config={config} />
-          <RechartsPrimitive.ResponsiveContainer>
+          <DebouncedResponsiveContainer routeKey={routeKey}>
             {children}
-          </RechartsPrimitive.ResponsiveContainer>
+          </DebouncedResponsiveContainer>
         </div>
       </ChartContext.Provider>
     );
+  }
+
+  /**
+   * DebouncedResponsiveContainer
+   * Replaces Recharts' ResponsiveContainer to debounce resize events and
+   * avoid continuous re-renders while a parent layout (eg. sidebar width)
+   * is animating. This reduces jank when charts resize frequently.
+   */
+  function DebouncedResponsiveContainer({ children, debounceMs = 90, routeKey = "" }) {
+    const containerRef = React.useRef(null)
+    const [size, setSize] = React.useState({ width: 0, height: 0 })
+    const lastAnimatedRef = React.useRef(null)
+
+    React.useEffect(() => {
+      const el = containerRef.current
+      if (!el) return
+
+      // Initialize size
+      const setElSize = () => {
+        setSize({ width: Math.floor(el.clientWidth), height: Math.floor(el.clientHeight) })
+      }
+      setElSize()
+
+      let timer = null
+      const ro = new ResizeObserver((entries) => {
+        const entry = entries[0]
+        if (!entry) return
+        const { width, height } = entry.contentRect
+        // debounce updates so rapid resize (eg. CSS transition) doesn't
+        // trigger continuous chart re-renders
+        if (timer) clearTimeout(timer)
+        timer = setTimeout(() => {
+          setSize({ width: Math.floor(width), height: Math.floor(height) })
+          timer = null
+        }, debounceMs)
+      })
+
+      ro.observe(el)
+
+      return () => {
+        ro.disconnect()
+        if (timer) clearTimeout(timer)
+      }
+    }, [containerRef, debounceMs])
+
+    // Draw-path animation: when routeKey changes we animate SVG paths
+    React.useEffect(() => {
+      if (!routeKey) return
+      if (!containerRef.current) return
+      if (size.width === 0 || size.height === 0) return
+      if (lastAnimatedRef.current === routeKey) return
+
+      const el = containerRef.current
+      const svg = el.querySelector('svg')
+      if (!svg) return
+
+      const paths = Array.from(svg.querySelectorAll('path'))
+        .filter((p) => {
+          const stroke = p.getAttribute('stroke') || window.getComputedStyle(p).stroke
+          return stroke && stroke !== 'none' && stroke !== 'transparent'
+        })
+
+      const animationBegin = 80
+      const animationDuration = 900
+      const stagger = 80
+
+      paths.forEach((p, i) => {
+        try {
+          const len = p.getTotalLength()
+          p.style.transition = 'none'
+          p.style.strokeDasharray = len
+          p.style.strokeDashoffset = String(len)
+          // force layout
+          p.getBoundingClientRect()
+
+          const delay = animationBegin + i * stagger
+          p.style.transition = `stroke-dashoffset ${animationDuration}ms ease ${delay}ms`
+          requestAnimationFrame(() => {
+            p.style.strokeDashoffset = '0'
+          })
+        } catch (err) {
+          // ignore
+        }
+      })
+
+      lastAnimatedRef.current = routeKey
+    }, [routeKey, size.width, size.height])
+
+    // Wait until we have a measured size before rendering child chart to
+    // avoid initial mismatches.
+    return (
+      <div ref={containerRef} style={{ width: '100%', height: '100%' }}>
+        {size.width > 0 && size.height > 0
+          ? React.cloneElement(React.Children.only(children), { key: `${routeKey}:${size.width}x${size.height}`, width: size.width, height: size.height })
+          : null}
+      </div>
+    )
   }
 
   const ChartStyle = ({
