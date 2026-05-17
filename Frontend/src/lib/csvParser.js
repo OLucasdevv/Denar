@@ -81,7 +81,7 @@ export function parseNubank(linhas) {
   })
 
   const transacoes = linhas.slice(headerIndex + 1)
-
+  
   return transacoes
     .filter(linha => linha.length > 0)
     .map(linha => {

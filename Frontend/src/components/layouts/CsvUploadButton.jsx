@@ -50,24 +50,24 @@ export default function CsvUploadButton({
   }
 
   return (
-    <div className="flex flex-col items-center gap-4">
+    <div className="flex flex-col items-center gap-4 ">
       <input
         type="file"
         accept=".csv"
         onChange={handleUpload}
         id="file-upload"
-        className="hidden"
+        className="hidden "
         disabled={isDisabled}
       />
 
       <label
         htmlFor="file-upload"
         className={`
-          flex items-center gap-2 px-6 py-3 text-white rounded-xl border transition-all shadow-lg
+          flex items-center gap-2 px-6 py-3 text-white rounded-xl border transition-all shadow-lg cursor-pointer
           ${
             isDisabled
-              ? "bg-zinc-800 border-zinc-700 opacity-50 cursor-not-allowed shadow-none"
-              : "bg-zinc-900 border-zinc-700 cursor-pointer hover:bg-zinc-800 active:scale-95"
+              ? " border-sidebar-border  opacity-50 cursor-not-allowed shadow-none"
+              : " border-sidebar-border   hover:bg-sidebar-hover active:scale-95"
           }
         `}
       >
@@ -82,7 +82,7 @@ export default function CsvUploadButton({
               className="text-primary"
             />
 
-            <span className="font-medium">
+            <span className="font-medium text-foreground ">
               {hasData && disableWhenHasData
                 ? "CSV Já Importado"
                 : "Importar CSV"}

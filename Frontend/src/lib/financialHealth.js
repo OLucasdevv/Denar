@@ -88,7 +88,7 @@ function removerOutliers(valores) {
   return filtrados.length >= 2 ? filtrados : valores
 }
 
-function detectarFixos(mapa) {
+function detectarFixos(mapa, totalMeses) {          // ← adiciona totalMeses
   const fixos = []
 
   for (let nome in mapa) {
@@ -105,17 +105,15 @@ function detectarFixos(mapa) {
       v.reduce((a, b) => a + b, 0)
     )
 
-    if (valoresBrutos.length < 2) continue
+    // ✅ antes: length < 2  →  agora: mínimo 3 meses E pelo menos 30% do histórico
+    const pctHistorico = valoresBrutos.length / totalMeses
+    if (valoresBrutos.length < 3 || pctHistorico < 0.3) continue
 
-    // remove outliers antes de calcular média
     const valores = removerOutliers(valoresBrutos)
     const media = valores.reduce((a, b) => a + b, 0) / valores.length
 
-    // ignora cobranças muito pequenas
     if (media < VALOR_MINIMO_FIXO) continue
 
-    // tolerância de 15%, e exige que 80% dos meses sejam consistentes
-    // (mais robusto que exigir 100%)
     const dentroDoRange = valores.filter(v =>
       Math.abs(v - media) / media <= 0.15
     )
@@ -254,17 +252,19 @@ export function classificarFluxo(transacoes) {
   const ctx = getDateContext(transacoes)
   if (!ctx) return null
 
+  const totalMeses = new Set(transacoes.map(t => getMesAno(t.date))).size
+
   const circulantes = detectarCirculantes(mapa)
-  const fixos = detectarFixos(mapa)
+  const fixos = detectarFixos(mapa, totalMeses)
 
   const classificadas = classificar(transacoes, fixos, circulantes)
 
   const metricas = calcularMetricas(classificadas, ctx)
   const somaFixosDetectados = fixos.reduce((s, f) => s + (f.valor || 0), 0)
   metricas.comprometidoFixo = Math.max(metricas.comprometidoFixo, somaFixosDetectados)
+
   const destino = calcularDestino(classificadas, ctx)
-  const meses = new Set(transacoes.map(t => getMesAno(t.date))).size
-  const score = calcularScore(metricas, meses)
+  const score = calcularScore(metricas, totalMeses)
 
   return {
     ...metricas,
@@ -273,7 +273,7 @@ export function classificarFluxo(transacoes) {
     circulantesDetectados: circulantes,
     destinoDoDinheiro: destino,
     score,
-    mesesDisponiveis: meses,
-    historicoInsuficiente: meses < 3
+    mesesDisponiveis: totalMeses,
+    historicoInsuficiente: totalMeses < 3
   }
 }
